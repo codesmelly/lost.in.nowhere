@@ -88,17 +88,21 @@
             alert(message);
         });
     };
-    document.body.appendChild(script);  
+
+    var linkElement = document.createElement('a');
+    linkElement.id = 'link';
+    window.document.body.appendChild(linkElement);        
+    
+    document.body.appendChild(script);
 
     function initBridge() {
         const bridge = vkBridge.default;
 
         bridge.subscribe(eventHandler);
-
+ 
         bridge.send("VKWebAppInit", {})
         .then(data => {
-          myGameInstance.SendMessage('VkBridge', 'Initialized', JSON.stringify(data));
-
+          myGameInstance.SendMessage('VkBridge', 'Initialized', JSON.stringify(data));  
         })  
         .catch(error => console.log(error));          
     }
@@ -170,7 +174,10 @@
         .then(data => {
           myGameInstance.SendMessage('VkBridge', 'ShowInterstitialResult', JSON.stringify(data));
         })  
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log(error);
+            myGameInstance.SendMessage('VkBridge', 'ShowInterstitialResult', JSON.stringify(error));
+        });
     }
 
     function showRewarded(id){
@@ -179,7 +186,10 @@
         .then(data => {
           myGameInstance.SendMessage('VkBridge', 'ShowRewardedResult', JSON.stringify(data));
         })  
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log(error);
+            myGameInstance.SendMessage('VkBridge', 'ShowRewardedResult', JSON.stringify(error));
+        });
     }      
 
     function sendPost(text){
@@ -265,6 +275,12 @@
         }
         
       }
+
+    function OpenUrl(url) {
+        var link = document.getElementById('link');
+        link.setAttribute('href', url);
+        link.click();
+    }
 
     function CustomSend(nameMethod, paramsJson){
         var obj = {};
